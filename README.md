@@ -60,3 +60,67 @@ OOF tahminleri üzerine üç farklı birleştirme stratejisi denendi ve en iyi O
 |---|---|
 | **Ridge Stacking** | **1.21715** |
 | ElasticNet Stacking | 1.21738 |
+| Ağırlıklı Blend (1/RMSE) | 1.21902 |
+
+Nihai tahminler `[0, 10]` aralığına kırpılarak (`np.clip`) submission dosyası oluşturuldu.
+
+---
+
+## Sonuçlar
+
+| Model | Seed-Avg OOF RMSE |
+|---|---|
+| LightGBM | 1.22430 |
+| XGBoost | 1.22202 |
+| CatBoost | 1.21735 |
+| **Ridge Stack (final)** | **1.21715**  |
+
+Tekil en iyi model CatBoost olurken, Ridge tabanlı stacking tüm modellerin üzerine ek kazanç sağladı.
+
+---
+
+## Çalıştırma
+
+### Gereksinimler
+```bash
+pip install numpy pandas scikit-learn lightgbm xgboost catboost
+```
+
+### Kaggle Ortamında
+1. Notebook'a `yzta-2026-datathon` veri setini ekleyin.
+2. Hücreleri sırasıyla çalıştırın:
+   1. Veri yükleme
+   2. Ülke normalizasyonu
+   3. Özellik mühendisliği
+   4. Target encoding
+   5. Preprocessing (eksik doldurma + label encoding)
+   6. Model parametreleri
+   7. Seed averaging + 10-fold eğitim (⏱️ en uzun adım)
+   8. Stacking & en iyi model seçimi
+   9. Submission oluşturma
+3. Çıktı: `/kaggle/working/submission.csv`
+
+> **Not:** 3 seed × 10 fold × 3 model = 90 model eğitimi yapıldığı için toplam süre uzundur. Hızlı deneme için `SEEDS = [42]` ve `N_FOLDS = 5` olarak düşürülebilir.
+
+---
+
+## Proje Yapısı
+
+```
+├── notebook.ipynb          # Tüm pipeline (bu kod)
+├── submission.csv          # Nihai tahminler (24.000 satır)
+└── README.md
+```
+
+---
+
+## İyileştirme Fikirleri
+
+- [ ] Optuna ile hiperparametre optimizasyonu
+- [ ] Nöral ağ (TabNet / MLP) ile ensemble çeşitliliği
+- [ ] Pseudo-labeling
+- [ ] Feature selection (permutation importance ile gereksiz özelliklerin elenmesi)
+
+---
+
+*YZTA 2026 Datathon kapsamında geliştirilmiştir.*
